@@ -4,6 +4,20 @@ using System.Collections.Generic;
 public class PersonManager : MonoBehaviour
 {
 
+    public static PersonManager Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
+    }
+
     public List<GameObject> people = new List<GameObject>();
 
     public List<string> firstNames;
@@ -12,16 +26,16 @@ public class PersonManager : MonoBehaviour
 
     public bool wanderTime;
 
-    void Start()
+    public void Begin()
     {
-        CreatePeople(100);
+        CreatePeople(GameSettings.Instance.numberOfPeople);
     }
 
     void Update()
     {
         foreach (GameObject item in people)
         {
-            item.GetComponent<Person>().isWandering = wanderTime;
+            item.GetComponent<Person>().isWandering = RoundManager.Instance.activeRound;
         }
     }
 
@@ -44,6 +58,7 @@ public class PersonManager : MonoBehaviour
         }
         p.personName = newName;
         p.age = Random.Range(13, 86);
+        p.speed = Random.Range(GameSettings.Instance.minSpeed, GameSettings.Instance.maxSpeed);
         p.traits = GenerateTraits();
         if (!p.TryPlaceAtRandomPosition())
         {
@@ -60,7 +75,7 @@ public class PersonManager : MonoBehaviour
     List<Trait> GenerateTraits()
     {
         IReadOnlyList<Trait> availableTraits = TraitManager.Instance.Traits;
-        int desiredCount = Random.Range(5, 10);
+        int desiredCount = Random.Range(GameSettings.Instance.minTraits, GameSettings.Instance.maxTraits + 1);
         List<Trait> traits = new List<Trait>(desiredCount);
         HashSet<int> usedIndices = new HashSet<int>();
 

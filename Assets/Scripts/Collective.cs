@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,14 +12,16 @@ public class Collective : MonoBehaviour
 
     public List<Trait> traits = new List<Trait>();
 
-    public bool run;
+    public TMP_Text clubName;
 
     void Update()
     {
-        if (run)
+        if (isPlayer)
         {
-            Debug.Log(GetClubLabel());
+            color = GameSettings.Instance.playerColor;
         }
+        GetComponent<RawImage>().color = color;
+        clubName.text = GetClubLabel();
     }
 
     public string GetClubLabel()
