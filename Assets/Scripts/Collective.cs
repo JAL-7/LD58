@@ -13,6 +13,11 @@ public class Collective : MonoBehaviour
     public List<Trait> traits = new List<Trait>();
 
     public TMP_Text collectiveName;
+    public TMP_Text currentMembersText;
+    public TMP_Text pointsText;
+
+    public int currentMembers;
+    public int points;
 
     void Update()
     {
@@ -22,6 +27,16 @@ public class Collective : MonoBehaviour
         }
         GetComponent<RawImage>().color = color;
         collectiveName.text = GetCollectiveLabel(true);
+
+        if (currentMembersText != null)
+        {
+            currentMembersText.SetText($"{currentMembers} Current Members");
+        }
+
+        if (pointsText != null)
+        {
+            pointsText.SetText($"{points} Points");
+        }
     }
 
     public string GetCollectiveLabel(bool upperCaseT)

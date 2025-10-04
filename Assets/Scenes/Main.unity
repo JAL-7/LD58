@@ -298,10 +298,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Game
+  m_text: Restart
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
+  m_sharedMaterial: {fileID: 21261991626553910, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1346,7 +1346,7 @@ MonoBehaviour:
   gameOverWindow: {fileID: 249274526}
   roundText: {fileID: 362212383}
   timeText: {fileID: 1100941207}
-  option: {fileID: 203214949700926496, guid: edc3354267d1a054dbfb27c927a85b8b, type: 3}
+  option: {fileID: 1608647198323257455, guid: edc3354267d1a054dbfb27c927a85b8b, type: 3}
   optionsParent: {fileID: 2091313503}
   roundNumber: 0
   timeLeft: 0
@@ -4025,6 +4025,10 @@ MonoBehaviour:
   color: {r: 0.8509804, g: 0.37254903, b: 0.37254903, a: 1}
   traits: []
   collectiveName: {fileID: 1807513557}
+  currentMembersText: {fileID: 1236254436}
+  pointsText: {fileID: 1788424667}
+  currentMembers: 0
+  points: 0
 --- !u!114 &1633086083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5027,15 +5031,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GridLayoutGroup
   m_Padding:
-    m_Left: 75
-    m_Right: 75
+    m_Left: 100
+    m_Right: 100
     m_Top: 75
     m_Bottom: 75
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 150, y: 100}
-  m_Spacing: {x: 75, y: 50}
+  m_CellSize: {x: 400, y: 50}
+  m_Spacing: {x: 25, y: 25}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!114 &2091313505
@@ -5051,7 +5055,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 0.9019608}
+  m_Color: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5374,7 +5378,7 @@ GameObject:
   - component: {fileID: 8818129357025060571}
   - component: {fileID: 1053944144471964382}
   m_Layer: 5
-  m_Name: New Game
+  m_Name: Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5446,10 +5450,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Game
+  m_text: Start
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
+  m_sharedMaterial: {fileID: 21261991626553910, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5643,7 +5647,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 15, y: -25}
-  m_SizeDelta: {x: 180.84, y: 50}
+  m_SizeDelta: {x: 84.51, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &8603018099311819636
 MonoBehaviour:

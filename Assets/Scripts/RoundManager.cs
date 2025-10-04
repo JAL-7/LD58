@@ -88,9 +88,9 @@ public class RoundManager : MonoBehaviour
             if (!AICollectiveManager.Instance.playerCollective.GetComponent<Collective>().traits.Contains(trait))
             {
                 var t = Instantiate(option, optionsParent);
-                t.transform.GetChild(2).GetComponent<TMP_Text>().text = trait.coreValue;
-                t.GetComponent<Button>().onClick.RemoveAllListeners();
-                t.GetComponent<Button>().onClick.AddListener(() => Option(trait));
+                t.transform.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = trait.coreValue;
+                t.transform.GetChild(0).GetComponent<Button>().onClick.RemoveAllListeners();
+                t.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => Option(trait));
             }
         }
     }
@@ -103,6 +103,91 @@ public class RoundManager : MonoBehaviour
         foreach (GameObject obj in PersonManager.Instance.people)
         {
             obj.GetComponent<Person>().ChooseCollective();
+            if (obj.GetComponent<Person>().collective != null)
+            {
+                obj.GetComponent<SpriteRenderer>().color = obj.GetComponent<Person>().collective.color;
+
+            }
+            else
+            {
+                obj.GetComponent<SpriteRenderer>().color = Color.white;
+
+            }
+        }
+        UpdateCollectiveMemberships();
+        // HERE
+        BeginRound();
+    }
+
+    void UpdateCollectiveMemberships()
+    {
+        AICollectiveManager manager = AICollectiveManager.Instance;
+        if (manager == null)
+        {
+            return;
+        }
+
+        List<Collective> collectives = new List<Collective>();
+
+        if (manager.playerCollective != null)
+        {
+            Collective player = manager.playerCollective.GetComponent<Collective>();
+            if (player != null)
+            {
+                collectives.Add(player);
+            }
+        }
+
+        List<GameObject> aiCollectives = manager.collectivesAI;
+        if (aiCollectives != null)
+        {
+            for (int i = 0; i < aiCollectives.Count; i++)
+            {
+                GameObject obj = aiCollectives[i];
+                if (obj == null)
+                {
+                    continue;
+                }
+
+                Collective aiCollective = obj.GetComponent<Collective>();
+                if (aiCollective != null)
+                {
+                    collectives.Add(aiCollective);
+                }
+            }
+        }
+
+        List<GameObject> people = PersonManager.Instance != null ? PersonManager.Instance.people : null;
+
+        for (int i = 0; i < collectives.Count; i++)
+        {
+            Collective collective = collectives[i];
+            if (collective == null)
+            {
+                continue;
+            }
+
+            int memberCount = 0;
+            if (people != null)
+            {
+                for (int j = 0; j < people.Count; j++)
+                {
+                    GameObject personObj = people[j];
+                    if (personObj == null)
+                    {
+                        continue;
+                    }
+
+                    Person person = personObj.GetComponent<Person>();
+                    if (person != null && person.collective == collective)
+                    {
+                        memberCount++;
+                    }
+                }
+            }
+
+            collective.currentMembers = memberCount;
+            collective.points += memberCount;
         }
     }
 
