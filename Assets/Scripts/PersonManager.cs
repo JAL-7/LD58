@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PersonManager : MonoBehaviour
 {
@@ -44,7 +44,7 @@ public class PersonManager : MonoBehaviour
         }
         p.personName = newName;
         p.age = Random.Range(13, 86);
-        p.traits = new List<Trait>();
+        p.traits = GenerateTraits();
         if (!p.TryPlaceAtRandomPosition())
         {
             Debug.LogWarning($"Failed to place {newName} without overlaps.");
@@ -55,6 +55,25 @@ public class PersonManager : MonoBehaviour
     public string GenerateName()
     {
         return firstNames[Random.Range(0, firstNames.Count)] + " " + GetRandomUppercaseLetter() + ".";
+    }
+
+    List<Trait> GenerateTraits()
+    {
+        IReadOnlyList<Trait> availableTraits = TraitManager.Instance.Traits;
+        int desiredCount = Random.Range(5, 10);
+        List<Trait> traits = new List<Trait>(desiredCount);
+        HashSet<int> usedIndices = new HashSet<int>();
+
+        while (traits.Count < desiredCount && usedIndices.Count < availableTraits.Count)
+        {
+            int candidateIndex = Random.Range(0, availableTraits.Count);
+            if (usedIndices.Add(candidateIndex))
+            {
+                traits.Add(availableTraits[candidateIndex]);
+            }
+        }
+
+        return traits;
     }
 
     bool NameIsTaken(string n)

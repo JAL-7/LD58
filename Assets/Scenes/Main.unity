@@ -119,6 +119,58 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &144767870
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 144767872}
+  - component: {fileID: 144767871}
+  m_Layer: 0
+  m_Name: Player Collective
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &144767871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144767870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3fa664160c1cc244b607ed6a58f656c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Collective
+  isPlayer: 1
+  color: {r: 0.2998189, g: 0.8396226, b: 0.25743148, a: 1}
+  traits:
+  - coreValue: wef
+    adjective: wefwefwef
+  - coreValue: wef
+    adjective: we32
+  run: 0
+--- !u!4 &144767872
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144767870}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410065712
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,6 +182,7 @@ GameObject:
   - component: {fileID: 410065714}
   - component: {fileID: 410065713}
   - component: {fileID: 410065715}
+  - component: {fileID: 410065716}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -196,6 +249,19 @@ MonoBehaviour:
   personManager: {fileID: 410065713}
   targetCamera: {fileID: 519420031}
   selectedPerson: {fileID: 0}
+--- !u!114 &410065716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410065712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80088ac77358c104a9afc051e0141440, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Trait
+  traitDefinitions: []
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,3 +490,4 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 410065714}
+  - {fileID: 144767872}
