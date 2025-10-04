@@ -21,7 +21,7 @@ public class GameSettings : MonoBehaviour
 
     public int minTraits, maxTraits;
     public int numberOfPeople;
-    public int numberOfAIClubs;
+    public int numberOfAICollectives;
     public float minSpeed, maxSpeed;
     public int numberOfPossibleTraits;
     public int roundLength;

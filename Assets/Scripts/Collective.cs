@@ -12,7 +12,7 @@ public class Collective : MonoBehaviour
 
     public List<Trait> traits = new List<Trait>();
 
-    public TMP_Text clubName;
+    public TMP_Text collectiveName;
 
     void Update()
     {
@@ -21,14 +21,18 @@ public class Collective : MonoBehaviour
             color = GameSettings.Instance.playerColor;
         }
         GetComponent<RawImage>().color = color;
-        clubName.text = GetClubLabel();
+        collectiveName.text = GetCollectiveLabel(true);
     }
 
-    public string GetClubLabel()
+    public string GetCollectiveLabel(bool upperCaseT)
     {
         if (traits == null || traits.Count == 0)
         {
-            return "The club";
+            if (upperCaseT)
+            {
+                return "An empty collective";
+            }
+            return "an empty collective";
         }
 
         List<string> parts = new List<string>(traits.Count);
@@ -40,33 +44,45 @@ public class Collective : MonoBehaviour
 
         if (parts.Count == 0)
         {
-            return "The club";
+            if (upperCaseT)
+            {
+                return "An empty collective";
+            }
+            return "an empty collective";
         }
 
-        StringBuilder builder = new StringBuilder("The ");
+        StringBuilder builder = new StringBuilder();
+        if (upperCaseT)
+        {
+            builder.Append("The ");
+        }
+        else
+        {
+            builder.Append("the ");
+        }
 
         for (int i = 0; i < parts.Count; i++)
-        {
-            if (i > 0)
             {
-                // if (parts.Count == 2)
-                // {
-                //     builder.Append(" and ");
-                // }
-                // else if (i == parts.Count - 1)
-                // {
-                //     builder.Append(", and ");
-                // }
-                // else
-                // {
+                if (i > 0)
+                {
+                    // if (parts.Count == 2)
+                    // {
+                    //     builder.Append(" and ");
+                    // }
+                    // else if (i == parts.Count - 1)
+                    // {
+                    //     builder.Append(", and ");
+                    // }
+                    // else
+                    // {
                     builder.Append(", ");
-                // }
+                    // }
+                }
+
+                builder.Append(parts[i]);
             }
 
-            builder.Append(parts[i]);
-        }
-
-        builder.Append(" club");
+        builder.Append(" collective");
         return builder.ToString();
     }
 

@@ -225,4 +225,4 @@ MonoBehaviour:
   isPlayer: 0
   color: {r: 0.37254903, g: 0.8509804, b: 0.42352942, a: 1}
   traits: []
-  clubName: {fileID: 467102364322056277}
+  collectiveName: {fileID: 467102364322056277}

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIClubManager : MonoBehaviour
+public class AICollectiveManager : MonoBehaviour
 {
 
-    public static AIClubManager Instance { get; private set; }
+    public static AICollectiveManager Instance { get; private set; }
 
     void Awake()
     {
@@ -18,27 +18,27 @@ public class AIClubManager : MonoBehaviour
 
     }
 
-    public List<GameObject> clubs = new List<GameObject>();
+    public List<GameObject> collectives = new List<GameObject>();
     public Transform rightPanel;
 
-    public GameObject clubPrefab;
+    public GameObject collectivePrefab;
 
     public void Begin()
     {
-        CreateClubs(GameSettings.Instance.numberOfAIClubs);
+        CreateCollectives(GameSettings.Instance.numberOfAICollectives);
     }
 
-    public void CreateClubs(int count)
+    public void CreateCollectives(int count)
     {
         for (int i = 0; i < count; i++)
         {
-            clubs.Add(GenerateClub());
+            collectives.Add(GenerateCollective());
         }
     }
 
-    public GameObject GenerateClub()
+    public GameObject GenerateCollective()
     {
-        var obj = Instantiate(clubPrefab, rightPanel);
+        var obj = Instantiate(collectivePrefab, rightPanel);
         obj.GetComponent<Collective>().color = PickAcceptableColor();
         return obj;
     }

@@ -32,7 +32,7 @@ public class RoundManager : MonoBehaviour
     {
         menuPanel.SetActive(false);
         PersonManager.Instance.Begin();
-        AIClubManager.Instance.Begin();
+        AICollectiveManager.Instance.Begin();
         BeginRound();
     }
 

@@ -8,6 +8,7 @@ public class Person : MonoBehaviour
     public List<Trait> traits;
     public bool isWandering;
     public float speed = 1f;
+    public Collective collective;
 
     [SerializeField]
     float arrivalThreshold = 0.05f;

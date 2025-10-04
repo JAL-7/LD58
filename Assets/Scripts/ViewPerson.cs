@@ -11,6 +11,7 @@ public class ViewPerson : MonoBehaviour
 
     public TMP_Text nameText;
     public TMP_Text ageText;
+    public TMP_Text collectiveText;
     public TMP_Text traitsHeader;
     public TMP_Text traitsText;
 
@@ -20,6 +21,7 @@ public class ViewPerson : MonoBehaviour
         {
             nameText.text = "";
             ageText.text = "";
+            collectiveText.text = "";
             traitsHeader.text = "";
             traitsText.text = "";
         }
@@ -37,6 +39,16 @@ public class ViewPerson : MonoBehaviour
                 // selectedPerson.GetComponent<SpriteRenderer>().color = Color.green;
                 nameText.text = selectedPerson.personName;
                 ageText.text = selectedPerson.age.ToString() + " Years Old";
+                if (selectedPerson.collective == null)
+                {
+                    collectiveText.text = "Not a member of a collective";
+                    collectiveText.color = Color.white;
+                }
+                else
+                {
+                    collectiveText.text = "Member of " + selectedPerson.collective.GetCollectiveLabel(false);
+                    collectiveText.color = selectedPerson.collective.color;
+                }
                 traitsHeader.text = "Traits";
                 traitsText.text = "";
                 foreach (Trait item in selectedPerson.traits)
