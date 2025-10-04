@@ -69,6 +69,13 @@ public class PersonManager : MonoBehaviour
 
     public string GenerateName()
     {
+        int maxUniqueNames = firstNames.Count * 26;
+        if (people.Count >= maxUniqueNames)
+        {
+            string fallback = $"Person #{people.Count + 1}";
+            Debug.LogWarning($"PersonManager.GenerateName exhausted {maxUniqueNames} unique combinations. Using fallback name '{fallback}'.");
+            return fallback;
+        }
         return firstNames[Random.Range(0, firstNames.Count)] + " " + GetRandomUppercaseLetter() + ".";
     }
 
@@ -111,3 +118,4 @@ public class PersonManager : MonoBehaviour
     }
 
 }
+

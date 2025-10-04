@@ -9,6 +9,7 @@ public class Person : MonoBehaviour
     public bool isWandering;
     public float speed = 1f;
     public Collective collective;
+    public bool enRoute;
 
     [SerializeField]
     float arrivalThreshold = 0.05f;
@@ -203,6 +204,150 @@ public class Person : MonoBehaviour
         }
 
         transform.position = nextPosition;
+    }
+
+    public void ChooseCollective()
+    {
+        AICollectiveManager manager = AICollectiveManager.Instance;
+        HashSet<Collective> candidates = new HashSet<Collective>();
+
+        if (manager.playerCollective != null)
+        {
+            Collective playerCollective = manager.playerCollective.GetComponent<Collective>();
+            if (playerCollective != null)
+            {
+                candidates.Add(playerCollective);
+            }
+        }
+
+        List<GameObject> aiCollectives = manager.collectivesAI;
+        if (aiCollectives != null)
+        {
+            for (int i = 0; i < aiCollectives.Count; i++)
+            {
+                GameObject obj = aiCollectives[i];
+                if (obj == null)
+                {
+                    continue;
+                }
+
+                Collective aiCollective = obj.GetComponent<Collective>();
+                if (aiCollective != null)
+                {
+                    candidates.Add(aiCollective);
+                }
+            }
+        }
+
+        if (candidates.Count == 0)
+        {
+            return;
+        }
+
+        int bestScore = 0;
+        List<Collective> bestMatches = new List<Collective>();
+
+        foreach (Collective candidate in candidates)
+        {
+            int score = CountMatchingTraits(traits, candidate != null ? candidate.traits : null);
+            if (score <= 0)
+            {
+                continue;
+            }
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestMatches.Clear();
+                bestMatches.Add(candidate);
+            }
+            else if (score == bestScore)
+            {
+                bestMatches.Add(candidate);
+            }
+        }
+
+        if (bestScore <= 0 || bestMatches.Count == 0)
+        {
+            return;
+        }
+
+        Collective chosen = null;
+        if (bestMatches.Count == 1)
+        {
+            chosen = bestMatches[0];
+        }
+        else
+        {
+            if (collective != null)
+            {
+                for (int i = 0; i < bestMatches.Count; i++)
+                {
+                    if (bestMatches[i] == collective)
+                    {
+                        chosen = collective;
+                        break;
+                    }
+                }
+            }
+
+            if (chosen == null)
+            {
+                int index = Random.Range(0, bestMatches.Count);
+                chosen = bestMatches[index];
+            }
+        }
+
+        if (chosen != null)
+        {
+            collective = chosen;
+            enRoute = true;
+        }
+    }
+
+    static int CountMatchingTraits(IReadOnlyList<Trait> personTraits, List<Trait> collectiveTraits)
+    {
+        if (personTraits == null || personTraits.Count == 0 || collectiveTraits == null || collectiveTraits.Count == 0)
+        {
+            return 0;
+        }
+
+        int matches = 0;
+        for (int i = 0; i < personTraits.Count; i++)
+        {
+            Trait personTrait = personTraits[i];
+            if (personTrait == null)
+            {
+                continue;
+            }
+
+            for (int j = 0; j < collectiveTraits.Count; j++)
+            {
+                Trait collectiveTrait = collectiveTraits[j];
+                if (TraitsMatch(personTrait, collectiveTrait))
+                {
+                    matches++;
+                    break;
+                }
+            }
+        }
+
+        return matches;
+    }
+
+    static bool TraitsMatch(Trait a, Trait b)
+    {
+        if (a == null || b == null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(a, b))
+        {
+            return true;
+        }
+
+        return !string.IsNullOrEmpty(a.coreValue) && a.coreValue == b.coreValue;
     }
 
     bool ReachedTarget()
