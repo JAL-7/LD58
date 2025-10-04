@@ -111,6 +111,6 @@ MonoBehaviour:
   arrivalThreshold: 0.05
   minimumSeparation: 0.25
   viewportPaddingLeftPercent: 25
-  viewportPaddingRightPercent: 15
-  viewportPaddingTopPercent: 5
+  viewportPaddingRightPercent: 25
+  viewportPaddingTopPercent: 10
   viewportPaddingBottomPercent: 0

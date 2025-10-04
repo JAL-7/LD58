@@ -134,6 +134,10 @@ public class Person : MonoBehaviour
         maxX -= width * viewportPaddingRightPercent * 0.01f;
         maxY -= height * viewportPaddingTopPercent * 0.01f;
         minY += height * viewportPaddingBottomPercent * 0.01f;
+        minX += minimumSeparation;
+        maxX -= minimumSeparation;
+        minY += minimumSeparation;
+        maxY -= minimumSeparation;
 
         if (maxX <= minX || maxY <= minY)
         {

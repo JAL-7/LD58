@@ -14,7 +14,7 @@ public class PersonManager : MonoBehaviour
 
     void Start()
     {
-        CreatePeople(25);
+        CreatePeople(100);
     }
 
     void Update()
