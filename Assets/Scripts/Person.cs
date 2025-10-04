@@ -29,6 +29,7 @@ public class Person : MonoBehaviour
     float viewportPaddingBottomPercent = 5f;
 
     static readonly List<Person> ActivePeople = new List<Person>();
+    const float PathIntersectionEpsilon = 0.0001f;
 
     Vector3 wanderTarget;
     bool hasWanderTarget;
@@ -60,7 +61,7 @@ public class Person : MonoBehaviour
             return;
         }
 
-        bool needsTarget = !hasWanderTarget || ReachedTarget() || (minimumSeparation > 0f && !IsPositionRespectingSeparation(transform.position));
+        bool needsTarget = !hasWanderTarget || ReachedTarget() || !IsPositionRespectingSeparation(transform.position);
 
         if (needsTarget)
         {
@@ -78,7 +79,7 @@ public class Person : MonoBehaviour
         const int maxAttempts = 12;
         for (int attempt = 0; attempt < maxAttempts; attempt++)
         {
-            if (TryGetRandomPointInView(out Vector3 candidate) && IsPositionRespectingSeparation(candidate))
+            if (TryGetRandomPointInView(out Vector3 candidate) && IsPositionRespectingSeparation(candidate) && IsPathClearOfBuildings(transform.position, candidate))
             {
                 wanderTarget = candidate;
                 hasWanderTarget = true;
@@ -194,7 +195,7 @@ public class Person : MonoBehaviour
 
         Vector3 nextPosition = Vector3.MoveTowards(current, target, step);
 
-        if (!IsPositionRespectingSeparation(nextPosition))
+        if (!IsPathClearOfBuildings(current, nextPosition) || !IsPositionRespectingSeparation(nextPosition))
         {
             hasWanderTarget = false;
             return;
@@ -218,6 +219,11 @@ public class Person : MonoBehaviour
 
     bool IsPositionRespectingSeparation(Vector3 position)
     {
+        if (!IsPositionClearOfBuildings(position))
+        {
+            return false;
+        }
+
         if (minimumSeparation <= 0f)
         {
             return true;
@@ -249,4 +255,147 @@ public class Person : MonoBehaviour
 
         return true;
     }
+
+    bool IsPositionClearOfBuildings(Vector3 position)
+    {
+        IReadOnlyList<Building> buildings = Building.Active;
+        if (buildings == null || buildings.Count == 0)
+        {
+            return true;
+        }
+
+        Vector2 position2D = new Vector2(position.x, position.y);
+        float clearance = Mathf.Max(0f, minimumSeparation);
+
+        for (int i = 0; i < buildings.Count; i++)
+        {
+            Building building = buildings[i];
+            if (building == null)
+            {
+                continue;
+            }
+
+            Rect expanded = building.GetExpandedWorldRect(clearance);
+            if (expanded.Contains(position2D))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool IsPathClearOfBuildings(Vector3 start, Vector3 end)
+    {
+        IReadOnlyList<Building> buildings = Building.Active;
+        if (buildings == null || buildings.Count == 0)
+        {
+            return true;
+        }
+
+        Vector2 start2D = new Vector2(start.x, start.y);
+        Vector2 end2D = new Vector2(end.x, end.y);
+        float clearance = Mathf.Max(0f, minimumSeparation);
+
+        for (int i = 0; i < buildings.Count; i++)
+        {
+            Building building = buildings[i];
+            if (building == null)
+            {
+                continue;
+            }
+
+            Rect expanded = building.GetExpandedWorldRect(clearance);
+            if (SegmentIntersectsRect(start2D, end2D, expanded))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    static bool SegmentIntersectsRect(Vector2 start, Vector2 end, Rect rect)
+    {
+        if (rect.Contains(start) || rect.Contains(end))
+        {
+            return true;
+        }
+
+        Vector2 bottomLeft = new Vector2(rect.xMin, rect.yMin);
+        Vector2 bottomRight = new Vector2(rect.xMax, rect.yMin);
+        Vector2 topRight = new Vector2(rect.xMax, rect.yMax);
+        Vector2 topLeft = new Vector2(rect.xMin, rect.yMax);
+
+        if (SegmentsIntersect(start, end, bottomLeft, bottomRight))
+        {
+            return true;
+        }
+
+        if (SegmentsIntersect(start, end, bottomRight, topRight))
+        {
+            return true;
+        }
+
+        if (SegmentsIntersect(start, end, topRight, topLeft))
+        {
+            return true;
+        }
+
+        if (SegmentsIntersect(start, end, topLeft, bottomLeft))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    static bool SegmentsIntersect(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2)
+    {
+        float o1 = Orientation(p1, p2, q1);
+        float o2 = Orientation(p1, p2, q2);
+        float o3 = Orientation(q1, q2, p1);
+        float o4 = Orientation(q1, q2, p2);
+
+        if ((o1 > 0f && o2 < 0f || o1 < 0f && o2 > 0f) && (o3 > 0f && o4 < 0f || o3 < 0f && o4 > 0f))
+        {
+            return true;
+        }
+
+        if (Mathf.Abs(o1) <= PathIntersectionEpsilon && IsPointOnSegment(p1, p2, q1))
+        {
+            return true;
+        }
+
+        if (Mathf.Abs(o2) <= PathIntersectionEpsilon && IsPointOnSegment(p1, p2, q2))
+        {
+            return true;
+        }
+
+        if (Mathf.Abs(o3) <= PathIntersectionEpsilon && IsPointOnSegment(q1, q2, p1))
+        {
+            return true;
+        }
+
+        if (Mathf.Abs(o4) <= PathIntersectionEpsilon && IsPointOnSegment(q1, q2, p2))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    static float Orientation(Vector2 a, Vector2 b, Vector2 c)
+    {
+        return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+    }
+
+    static bool IsPointOnSegment(Vector2 a, Vector2 b, Vector2 point)
+    {
+        return point.x >= Mathf.Min(a.x, b.x) - PathIntersectionEpsilon &&
+               point.x <= Mathf.Max(a.x, b.x) + PathIntersectionEpsilon &&
+               point.y >= Mathf.Min(a.y, b.y) - PathIntersectionEpsilon &&
+               point.y <= Mathf.Max(a.y, b.y) + PathIntersectionEpsilon;
+    }
+
 }
