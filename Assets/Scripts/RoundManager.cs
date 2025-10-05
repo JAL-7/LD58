@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 public class RoundManager : MonoBehaviour
@@ -22,21 +23,29 @@ public class RoundManager : MonoBehaviour
     }
 
     public GameObject menuPanel;
+    public GameObject settingsPanel;
     public GameObject gameOverWindow;
+    public GameObject pauseMenu;
+    public RawImage color;
+
     public TMP_Text roundText;
     public TMP_Text timeText;
 
     public GameObject option;
     public Transform optionsParent;
 
+    public GameObject textPrefab;
+
     public int roundNumber;
     public float timeLeft;
     public bool activeRound;
     public bool endOfRound;
 
+    List<GameObject> objectsToChange;
+
     public void BeginGame()
     {
-        menuPanel.SetActive(false);
+        settingsPanel.SetActive(false);
         PersonManager.Instance.Begin();
         AICollectiveManager.Instance.Begin();
         BeginRound();
@@ -57,6 +66,7 @@ public class RoundManager : MonoBehaviour
 
     void Update()
     {
+        color.color = GameSettings.Instance.playerColor;
         if (activeRound)
         {
             timeLeft -= Time.deltaTime;
@@ -68,6 +78,30 @@ public class RoundManager : MonoBehaviour
             EndOfRound();
         }
     }
+
+    public void Play()
+    {
+        menuPanel.SetActive(false);
+        settingsPanel.SetActive(true);
+    }
+
+    public void Pause()
+    {
+        activeRound = false;
+        pauseMenu.SetActive(true);
+    }
+
+    public void Resume()
+    {
+        activeRound = true;
+        pauseMenu.SetActive(false);
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
 
     void EndOfRound()
     {
@@ -100,22 +134,30 @@ public class RoundManager : MonoBehaviour
         optionsParent.gameObject.SetActive(false);
         AICollectiveManager.Instance.playerCollective.GetComponent<Collective>().traits.Add(trait);
         SelectTraitAI();
+        objectsToChange = new List<GameObject>();
         foreach (GameObject obj in PersonManager.Instance.people)
         {
+            Collective c = obj.GetComponent<Person>().collective;
             obj.GetComponent<Person>().ChooseCollective();
-            if (obj.GetComponent<Person>().collective != null)
+            if (obj.GetComponent<Person>().collective != c)
             {
-                obj.GetComponent<SpriteRenderer>().color = obj.GetComponent<Person>().collective.color;
-
-            }
-            else
-            {
-                obj.GetComponent<SpriteRenderer>().color = Color.white;
-
+                objectsToChange.Add(obj);
             }
         }
+        StartCoroutine(ChangeAnimation());
+    }
+
+    IEnumerator ChangeAnimation()
+    {
+        for (int i = 0; i < objectsToChange.Count; i++)
+        {
+            objectsToChange[i].GetComponent<SpriteRenderer>().color = objectsToChange[i].GetComponent<Person>().collective.color;
+            GameObject o = Instantiate(textPrefab, objectsToChange[i].transform);
+            o.transform.GetChild(0).GetComponent<TMP_Text>().text = objectsToChange[i].GetComponent<Person>().collective.GetCollectiveLabel(true);
+            o.transform.GetChild(0).GetComponent<TMP_Text>().color = objectsToChange[i].GetComponent<Person>().collective.color;
+            yield return new WaitForSeconds(1.00f / GameSettings.Instance.animationSpeed);
+        }
         UpdateCollectiveMemberships();
-        // HERE
         BeginRound();
     }
 
